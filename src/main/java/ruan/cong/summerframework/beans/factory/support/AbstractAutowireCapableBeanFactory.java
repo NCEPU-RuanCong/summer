@@ -22,10 +22,7 @@ public class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory{
         if (StringUtils.isEmpty(beanName)) {
             throw new BeanNotFoundException("empty bean name!");
         }
-        Object obj = getBean(beanName);
-        if (obj != null) {
-            return obj;
-        }
+        Object obj = null;
         try {
             obj = getBeanDefinition(beanName).getBeanClass().newInstance();
         } catch (BeanException | IllegalAccessException | InstantiationException e) {

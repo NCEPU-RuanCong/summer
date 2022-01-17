@@ -1,14 +1,14 @@
 package ruan.cong.summerframework.beans.factory.support;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import ruan.cong.summerframework.beans.BeanException;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
 import ruan.cong.summerframework.utils.StringUtils;
 
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory implements BeanDefinitionRegistry{
 
-    private Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
+    private Map<String, BeanDefinition> beanDefinitionMap = new HashMap<>();
 
     @Override
     public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) {
@@ -26,6 +26,6 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
         if(beanDefinition == null){
             throw new BeanException("no bean named " + beanName);
         }
-        return beanDefinitionMap.get(beanName);
+        return beanDefinition;
     }
 }
