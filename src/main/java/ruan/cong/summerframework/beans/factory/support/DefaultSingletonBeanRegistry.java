@@ -9,7 +9,6 @@ import ruan.cong.summerframework.utils.StringUtils;
 public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
     private Map<String, Object> singletonObjects = new ConcurrentHashMap<String, Object>();
 
-    @Override
     public Object getSingletonBean(String beanName) {
         return singletonObjects.get(beanName);
     }
