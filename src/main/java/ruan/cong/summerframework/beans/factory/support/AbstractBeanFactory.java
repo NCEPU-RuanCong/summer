@@ -4,8 +4,6 @@ import ruan.cong.summerframework.beans.BeanException;
 import ruan.cong.summerframework.beans.factory.BeanFactory;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
 import ruan.cong.summerframework.beans.factory.exception.BeanDefinitionException;
-import ruan.cong.summerframework.beans.factory.exception.BeanNotFoundException;
-import ruan.cong.summerframework.utils.StringUtils;
 
 /**
  *
@@ -21,10 +19,17 @@ import ruan.cong.summerframework.utils.StringUtils;
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
 
     @Override
-    public Object getBean(String beanName){
-        if(StringUtils.isEmpty(beanName)){
-            throw new BeanNotFoundException(beanName + " not found");
+    public Object getBean(String beanName, Object... args){
+        Object obj = getSingletonBean(beanName);
+        if(obj != null){
+            return obj;
         }
+        BeanDefinition beanDefinition = getBeanDefinition(beanName);
+        return createBean(beanDefinition, beanName, args);
+    }
+
+    @Override
+    public Object getBean(String beanName){
         Object obj = getSingletonBean(beanName);
         if(obj != null){
             return obj;
@@ -39,4 +44,6 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeanException;
 
     protected abstract Object createBean(String beanName) throws BeanException;
+
+    protected abstract Object createBean(BeanDefinition beanDefinition, String beanName, Object[] args) throws BeanException;
 }
