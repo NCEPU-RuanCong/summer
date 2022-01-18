@@ -29,6 +29,9 @@ public class User {
         this.title = title;
     }
 
+    public User() {
+    }
+
     public User(Integer number, String name, String title) {
         this.number = number;
         this.name = name;

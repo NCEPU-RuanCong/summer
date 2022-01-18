@@ -54,7 +54,7 @@ public class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory{
             obj = beanDefinition.getBeanClass().newInstance();
             applyPropertyValues(beanName, beanDefinition, obj);
         } catch (InstantiationException | IllegalAccessException e){
-            throw new BeanException("bean" + beanName + "create failed!", e);
+            throw new BeanException("bean " + beanName + " create failed!", e);
         }
         addSingletonBean(beanName, obj);
         return obj;

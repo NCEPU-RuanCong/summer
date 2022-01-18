@@ -3,6 +3,7 @@ package ruan.cong.summerframework.test;
 import ruan.cong.summerframework.beans.PropertyValue;
 import ruan.cong.summerframework.beans.PropertyValues;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
+import ruan.cong.summerframework.beans.factory.config.BeanReference;
 import ruan.cong.summerframework.beans.factory.support.DefaultListableBeanFactory;
 import ruan.cong.summerframework.test.bean.UserService;
 import ruan.cong.summerframework.test.domain.User;
@@ -27,20 +28,31 @@ public class ApiTest {
     private static void applyPropertyInject(){
         DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
         BeanDefinition userServiceBeanDefinition = new BeanDefinition(UserService.class);
+        BeanDefinition userBeanDefinition = new BeanDefinition(User.class);
         PropertyValues propertyValues = new PropertyValues();
+        PropertyValues userPropertyValues = new PropertyValues();
         PropertyValue propertyValue1 = new PropertyValue("number", "666");
         PropertyValue propertyValue2 = new PropertyValue("name", "ruancong");
-        PropertyValue propertyValue3 = new PropertyValue("user", new User(1, "ruancong", "java softwareEngineering"));
+        PropertyValue propertyValue3 = new PropertyValue("user", new BeanReference("user"));
         propertyValues.addPropertyValue(propertyValue1);
         propertyValues.addPropertyValue(propertyValue2);
         propertyValues.addPropertyValue(propertyValue3);
         userServiceBeanDefinition.setPropertyValues(propertyValues);
-        beanFactory.registerBeanDefinition("userService", userServiceBeanDefinition);
 
+        PropertyValue userPropertyValue1 = new PropertyValue("number", 114);
+        PropertyValue userPropertyValue2 = new PropertyValue("name", "NCEPU");
+        PropertyValue userPropertyValue3 = new PropertyValue("title", "Java softwareEngineering");
+        userPropertyValues.addPropertyValue(userPropertyValue1);
+        userPropertyValues.addPropertyValue(userPropertyValue2);
+        userPropertyValues.addPropertyValue(userPropertyValue3);
+        userBeanDefinition.setPropertyValues(userPropertyValues);
+
+        beanFactory.registerBeanDefinition("userService", userServiceBeanDefinition);
+        beanFactory.registerBeanDefinition("user", userBeanDefinition);
         UserService userServiceBean = (UserService)beanFactory.getBean("userService", "RuanCong");
         System.out.println(userServiceBean.toString());
-        System.out.println("==============" + userServiceBean + "====================");
+        System.out.println("==============" + userServiceBean.getClass() + "====================");
         UserService userServiceBean2 = (UserService)beanFactory.getBean("userService");
-        System.out.println("==============" + userServiceBean2 + "====================");
+        System.out.println("==============" + userServiceBean2.getClass() + "====================");
     }
 }
