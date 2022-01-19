@@ -37,6 +37,9 @@ public class UserService {
         this.name = name;
     }
 
+    public UserService() {
+    }
+
     public UserService(String name, String number) {
         this.name = name;
         this.number = number;

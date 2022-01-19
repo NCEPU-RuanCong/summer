@@ -1,15 +1,15 @@
 package ruan.cong.summerframework.test.domain;
 
 public class User {
-    private Integer number;
+    private String number;
     private String name;
     private String title;
 
-    public Integer getNumber() {
+    public String getNumber() {
         return number;
     }
 
-    public void setNumber(Integer number) {
+    public void setNumber(String number) {
         this.number = number;
     }
 
@@ -32,7 +32,7 @@ public class User {
     public User() {
     }
 
-    public User(Integer number, String name, String title) {
+    public User(String number, String name, String title) {
         this.number = number;
         this.name = name;
         this.title = title;

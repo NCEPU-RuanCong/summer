@@ -1,7 +1,6 @@
 package ruan.cong.summerframework.beans.factory.support;
 
 import java.lang.reflect.Constructor;
-import java.util.Properties;
 import ruan.cong.summerframework.beans.BeanException;
 import ruan.cong.summerframework.beans.PropertyValue;
 import ruan.cong.summerframework.beans.PropertyValues;

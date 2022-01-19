@@ -20,7 +20,7 @@ public class BeanUtils {
                 fillField(superclassDeclaredFields, bean, name, value);
             }
         } catch (SecurityException | IllegalArgumentException e) {
-            throw new BeanException("create bean failed" + name);
+            throw new BeanException("create bean failed " + name);
         }
     }
 

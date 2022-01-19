@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean id="user" class="ruan.cong.summerframework.test.domain.User">
+        <property name="name" value="xth"/>
+        <property name="number" value="TYC-123"/>
+        <property name="title" value="浪漫猪脚饭"/>
+    </bean>
+    <bean id="userService" class="ruan.cong.summerframework.test.bean.UserService">
+        <property name="name" value="ruancong"/>
+        <property name="number" value="TYC-666"/>
+        <property name="user" ref="user"/>
+    </bean>
+</beans>

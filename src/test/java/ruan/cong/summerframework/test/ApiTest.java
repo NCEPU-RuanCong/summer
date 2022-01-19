@@ -5,12 +5,26 @@ import ruan.cong.summerframework.beans.PropertyValues;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
 import ruan.cong.summerframework.beans.factory.config.BeanReference;
 import ruan.cong.summerframework.beans.factory.support.DefaultListableBeanFactory;
+import ruan.cong.summerframework.beans.factory.xml.XMLBeanDefinitionReader;
 import ruan.cong.summerframework.test.bean.UserService;
 import ruan.cong.summerframework.test.domain.User;
 
 public class ApiTest {
-    public static void main(String[] args){
-        applyPropertyInject();
+    public static void main(String[] args) throws ClassNotFoundException {
+        XMLConfigurationTest();
+//        applyPropertyInject();
+    }
+
+    private static void XMLConfigurationTest(){
+        DefaultListableBeanFactory defaultListableBeanFactory = new DefaultListableBeanFactory();
+        XMLBeanDefinitionReader beanDefinitionReader = new XMLBeanDefinitionReader(defaultListableBeanFactory);
+        beanDefinitionReader.loadBeanDefinitions("classpath:Spring.xml");
+
+        UserService userServiceBean = (UserService)defaultListableBeanFactory.getBean("userService");
+        userServiceBean.printUsername();
+        System.out.println("==============" + userServiceBean + "====================");
+        UserService userServiceBean2 = (UserService)defaultListableBeanFactory.getBean("userService");
+        System.out.println("==============" + userServiceBean2 + "====================");
     }
 
     private static void BeanTestVersion1(){
