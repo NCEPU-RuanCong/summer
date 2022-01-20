@@ -4,6 +4,7 @@ import ruan.cong.summerframework.beans.PropertyValue;
 import ruan.cong.summerframework.beans.PropertyValues;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
 import ruan.cong.summerframework.beans.factory.config.BeanReference;
+import ruan.cong.summerframework.beans.factory.context.ClassPathXMLApplicationContext;
 import ruan.cong.summerframework.beans.factory.support.DefaultListableBeanFactory;
 import ruan.cong.summerframework.beans.factory.xml.XMLBeanDefinitionReader;
 import ruan.cong.summerframework.test.bean.UserService;
@@ -11,8 +12,23 @@ import ruan.cong.summerframework.test.domain.User;
 
 public class ApiTest {
     public static void main(String[] args) throws ClassNotFoundException {
-        XMLConfigurationTest();
+
+        selfApplicationTest();
+
+//        XMLConfigurationTest();
 //        applyPropertyInject();
+    }
+
+    private static void selfApplicationTest(){
+        ClassPathXMLApplicationContext classPathXMLApplicationContext = new ClassPathXMLApplicationContext();
+        System.out.println("==================================开始上下文刷新================================");
+        ClassPathXMLApplicationContext refresh = classPathXMLApplicationContext.refresh();
+
+        UserService userServiceBean = (UserService)refresh.getBean("userService");
+        userServiceBean.printUsername();
+        System.out.println("==============" + userServiceBean + "====================");
+        UserService userServiceBean2 = (UserService)refresh.getBean("userService");
+        System.out.println("==============" + userServiceBean2 + "====================");
     }
 
     private static void XMLConfigurationTest(){

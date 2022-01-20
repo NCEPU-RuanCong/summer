@@ -10,4 +10,8 @@
         <property name="number" value="TYC-666"/>
         <property name="user" ref="user"/>
     </bean>
+    <bean id="myBeanFactoryPostProcessor" class="ruan.cong.summerframework.test.post.processor.MyBeanFactoryPostProcessor">
+    </bean>
+    <bean id="myBeanPostProcessor" class="ruan.cong.summerframework.test.post.processor.MyBeanPostProcessor">
+    </bean>
 </beans>

@@ -9,6 +9,14 @@ import ruan.cong.summerframework.utils.StringUtils;
 public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
     private Map<String, Object> singletonObjects = new HashMap();
 
+    public Map<String, Object> getSingletonObjects() {
+        return singletonObjects;
+    }
+
+    public void setSingletonObjects(Map<String, Object> singletonObjects) {
+        this.singletonObjects = singletonObjects;
+    }
+
     public Object getSingletonBean(String beanName) {
         return singletonObjects.get(beanName);
     }

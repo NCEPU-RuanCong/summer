@@ -1,11 +1,13 @@
 package ruan.cong.summerframework.beans.factory.support;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
 import ruan.cong.summerframework.beans.BeanException;
 import ruan.cong.summerframework.beans.PropertyValue;
 import ruan.cong.summerframework.beans.PropertyValues;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
 import ruan.cong.summerframework.beans.factory.config.BeanReference;
+import ruan.cong.summerframework.beans.factory.context.BeanPostProcessor;
 import ruan.cong.summerframework.utils.BeanUtils;
 
 /**
@@ -41,7 +43,9 @@ public class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory{
             }
         }
         Object obj = getInstantiationStrategy().instantiate(beanDefinition, beanName, ctor, args);
+        invokeBeanPostProcessorBefore();
         applyPropertyValues(beanName, beanDefinition, obj);
+        invokeBeanPostProcessorAfter();
         return obj;
     }
 
@@ -51,7 +55,9 @@ public class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory{
         try {
             BeanDefinition beanDefinition = getBeanDefinition(beanName);
             obj = beanDefinition.getBeanClass().newInstance();
+            invokeBeanPostProcessorBefore();
             applyPropertyValues(beanName, beanDefinition, obj);
+            invokeBeanPostProcessorAfter();
         } catch (InstantiationException | IllegalAccessException e){
             throw new BeanException("bean " + beanName + " create failed!", e);
         }
@@ -80,5 +86,30 @@ public class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory{
             }
             BeanUtils.setFieldValue(bean, pv.getName(), value);
         }
+    }
+
+    public void invokeBeanPostProcessorBefore(){
+        List<Object> beanPostProcessorList = getBean(BeanPostProcessor.class);
+        for(Object beanPostProcessor : beanPostProcessorList){
+            if(beanPostProcessor instanceof BeanPostProcessor){
+                BeanPostProcessor bpp = (BeanPostProcessor)beanPostProcessor;
+                bpp.beforeBeanPostProcessor();
+            }
+        }
+    }
+
+    public void invokeBeanPostProcessorAfter(){
+        List<Object> beanPostProcessorList = getBean(BeanPostProcessor.class);
+        for(Object beanPostProcessor : beanPostProcessorList){
+            if(beanPostProcessor instanceof BeanPostProcessor){
+                BeanPostProcessor bpp = (BeanPostProcessor)beanPostProcessor;
+                bpp.afterBeanPostProcessor();
+            }
+        }
+    }
+
+    @Override
+    public List<Object> getBean(Class beanType) {
+        return null;
     }
 }
