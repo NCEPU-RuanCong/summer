@@ -1,8 +1,11 @@
 package ruan.cong.summerframework.beans.factory.support;
 
+import java.util.ArrayList;
+import java.util.List;
 import ruan.cong.summerframework.beans.BeanException;
 import ruan.cong.summerframework.beans.factory.BeanFactory;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
+import ruan.cong.summerframework.beans.factory.config.BeanPostProcessor;
 import ruan.cong.summerframework.beans.factory.exception.BeanDefinitionException;
 
 /**
@@ -17,6 +20,12 @@ import ruan.cong.summerframework.beans.factory.exception.BeanDefinitionException
  *
  */
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
+
+    private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
+
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return beanPostProcessors;
+    }
 
     @Override
     public Object getBean(String beanName, Object... args){
@@ -46,4 +55,9 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
     protected abstract Object createBean(String beanName) throws BeanException;
 
     protected abstract Object createBean(BeanDefinition beanDefinition, String beanName, Object[] args) throws BeanException;
+
+    public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor){
+        this.beanPostProcessors.remove(beanPostProcessor);
+        this.beanPostProcessors.add(beanPostProcessor);
+    }
 }

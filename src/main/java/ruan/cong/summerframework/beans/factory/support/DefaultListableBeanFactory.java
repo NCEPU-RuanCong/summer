@@ -3,10 +3,11 @@ package ruan.cong.summerframework.beans.factory.support;
 import java.util.HashMap;
 import java.util.Map;
 import ruan.cong.summerframework.beans.BeanException;
+import ruan.cong.summerframework.beans.factory.ConfigurableListableBeanFactory;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
 import ruan.cong.summerframework.utils.StringUtils;
 
-public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory implements BeanDefinitionRegistry{
+public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory implements BeanDefinitionRegistry, ConfigurableListableBeanFactory {
 
     private Map<String, BeanDefinition> beanDefinitionMap = new HashMap<>();
 
@@ -35,7 +36,23 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
     }
 
     @Override
+    public <T> Map<String, T> getBeanOfType(Class<T> type) throws BeanException {
+        Map<String, T> beans = new HashMap<>();
+        beanDefinitionMap.forEach((beanName, beanDefinition) -> {
+            if(type.isAssignableFrom(beanDefinition.getBeanClass())){
+                beans.put(beanName, (T)getBean(beanName));
+            }
+        });
+        return beans;
+    }
+
+    @Override
     public String[] getBeanDefinitionNames() {
         return beanDefinitionMap.keySet().toArray(new String[0]);
+    }
+
+    @Override
+    public void preInstantiateSingletons() throws BeanException {
+
     }
 }

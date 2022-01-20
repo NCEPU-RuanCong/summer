@@ -7,6 +7,16 @@ public class BeanDefinition {
 
     private PropertyValues propertyValues;
 
+    private String initMethodName;
+
+    public String getInitMethodName() {
+        return initMethodName;
+    }
+
+    public void setInitMethodName(String initMethodName) {
+        this.initMethodName = initMethodName;
+    }
+
     public BeanDefinition(Class beanClass, PropertyValues propertyValues) {
         this.beanClass = beanClass;
         this.propertyValues = propertyValues;
