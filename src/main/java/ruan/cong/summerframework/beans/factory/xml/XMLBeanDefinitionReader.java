@@ -79,6 +79,8 @@ public class XMLBeanDefinitionReader extends AbstractBeanDefinitionReader {
             String id = bean.getAttribute("id");
             String name = bean.getAttribute("name");
             String className = bean.getAttribute("class");
+            String initMethod = bean.getAttribute("init-method");
+            String destroyMethod = bean.getAttribute("destroy-method");
 
             Class<?> clazz = Class.forName(className);
             // id优先级 > name
@@ -96,10 +98,18 @@ public class XMLBeanDefinitionReader extends AbstractBeanDefinitionReader {
                 String attrValue = property.getAttribute("value");
                 String attrRef = property.getAttribute("ref");
 
+                initMethod = StringUtils.isEmpty(initMethod) ? property.getAttribute("init-method") : initMethod;
+                destroyMethod = StringUtils.isEmpty(destroyMethod) ? property.getAttribute("destroy-method") : destroyMethod;
+
                 Object value = StringUtils.nonEmpty(attrRef) ? new BeanReference(attrRef) : attrValue;
                 PropertyValue propertyValue = new PropertyValue(attrName, value);
                 beanDefinition.getPropertyValues().addPropertyValue(propertyValue);
             }
+
+            if(StringUtils.nonEmpty(initMethod)) beanDefinition.setInitMethodName(initMethod);
+
+            if(StringUtils.nonEmpty(destroyMethod)) beanDefinition.setDestroyMethodName(destroyMethod);
+
             if(getRegistry().containsBeanDefinition(beanName)){
                 throw new BeanException(beanName + " already exist!");
             }

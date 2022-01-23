@@ -12,9 +12,21 @@ import ruan.cong.summerframework.test.domain.User;
 
 public class ApiTest {
     public static void main(String[] args) throws ClassNotFoundException {
-        ApplicationTest();
+        initAndDestroyMethodTest();
+//        ApplicationTest();
 //        XMLConfigurationTest();
 //        applyPropertyInject();
+    }
+
+    private static void initAndDestroyMethodTest(){
+        ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext("classpath:Spring.xml");
+        classPathXmlApplicationContext.refresh();
+
+        UserService userServiceBean = (UserService)classPathXmlApplicationContext.getBean("userService");
+        userServiceBean.printUsername();
+        System.out.println("==============" + userServiceBean + "====================");
+        UserService userServiceBean2 = (UserService)classPathXmlApplicationContext.getBean("userService");
+        System.out.println("==============" + userServiceBean2 + "====================");
     }
 
 

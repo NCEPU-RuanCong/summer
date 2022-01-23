@@ -59,6 +59,14 @@ public class UserService {
         System.out.println("UserService---userName:" + name + "\nnumber:" + number);
     }
 
+    public void myInitMethod(){
+        System.out.println("==============UserService的initMethod开始执行================");
+    }
+
+    public void myDestroyMethod(){
+        System.out.println("==============UserService的<<destroyMethod开始执行================");
+    }
+
     @Override
     public String toString() {
         return "UserService{" +

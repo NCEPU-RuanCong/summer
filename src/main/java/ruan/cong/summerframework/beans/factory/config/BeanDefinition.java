@@ -9,6 +9,16 @@ public class BeanDefinition {
 
     private String initMethodName;
 
+    private String destroyMethodName;
+
+    public String getDestroyMethodName() {
+        return destroyMethodName;
+    }
+
+    public void setDestroyMethodName(String destroyMethodName) {
+        this.destroyMethodName = destroyMethodName;
+    }
+
     public String getInitMethodName() {
         return initMethodName;
     }

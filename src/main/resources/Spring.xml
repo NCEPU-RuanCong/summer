@@ -5,10 +5,12 @@
         <property name="number" value="TYC-123"/>
         <property name="title" value="浪漫猪脚饭"/>
     </bean>
-    <bean id="userService" class="ruan.cong.summerframework.test.bean.UserService">
+    <bean id="userService" class="ruan.cong.summerframework.test.bean.UserService" init-method="myInitMethod" destroy-method="myDestroyMethod">
         <property name="name" value="ruancong"/>
         <property name="number" value="TYC-666"/>
         <property name="user" ref="user"/>
+        <property name="init-method" value="myInitMethod"/>
+        <property name="destroy-method" value="myDestroyMethod"/>
     </bean>
     <bean id="myBeanFactoryPostProcessor" class="ruan.cong.summerframework.test.post.processor.MyBeanFactoryPostProcessor">
     </bean>

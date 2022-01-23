@@ -6,6 +6,7 @@ import java.util.List;
 import ruan.cong.summerframework.beans.BeanException;
 import ruan.cong.summerframework.beans.PropertyValue;
 import ruan.cong.summerframework.beans.PropertyValues;
+import ruan.cong.summerframework.beans.factory.DisposableBean;
 import ruan.cong.summerframework.beans.factory.InitializingBean;
 import ruan.cong.summerframework.beans.factory.config.AutowireCapableBeanFactory;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
@@ -55,14 +56,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     @Override
     protected Object createBean(String beanName) throws BeanException {
         Object obj = null;
+        BeanDefinition beanDefinition = null;
         try {
-            BeanDefinition beanDefinition = getBeanDefinition(beanName);
+            beanDefinition = getBeanDefinition(beanName);
             obj = beanDefinition.getBeanClass().newInstance();
             applyPropertyValues(beanName, beanDefinition, obj);
             obj = initializeBean(beanName, obj, beanDefinition);
         } catch (InstantiationException | IllegalAccessException e){
             throw new BeanException("bean " + beanName + " create failed!", e);
         }
+
+        registerDisposalBeanIfNecessary(beanName, obj, beanDefinition);
+
         addSingletonBean(beanName, obj);
         return obj;
     }
@@ -71,6 +76,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     protected Object createBean(BeanDefinition beanDefinition, String beanName, Object[] args) throws BeanException{
         Object obj = null;
         obj = createBeanInstance(beanDefinition, beanName, args);
+
+        registerDisposalBeanIfNecessary(beanName, obj, beanDefinition);
+
         addSingletonBean(beanName, obj);
         return obj;
     }
@@ -154,5 +162,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             currentBean = result;
         }
         return currentBean;
+    }
+
+    protected void registerDisposalBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition){
+        if(bean instanceof DisposableBean || StringUtils.nonEmpty(beanDefinition.getDestroyMethodName())){
+            registerDisposalBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
+        }
     }
 }
