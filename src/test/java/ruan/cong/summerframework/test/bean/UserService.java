@@ -8,6 +8,7 @@ import ruan.cong.summerframework.beans.factory.BeanFactory;
 import ruan.cong.summerframework.beans.factory.BeanFactoryAware;
 import ruan.cong.summerframework.beans.factory.BeanNameAware;
 import ruan.cong.summerframework.test.domain.User;
+import ruan.cong.summerframework.test.mapper.Company;
 
 public class UserService implements ApplicationContextAware, BeanFactoryAware, BeanNameAware, BeanClassLoaderAware {
 
@@ -20,6 +21,7 @@ public class UserService implements ApplicationContextAware, BeanFactoryAware, B
     private String number;
 
     private User user;
+    private Company company;
 
     public User getUser() {
         return user;
@@ -115,5 +117,9 @@ public class UserService implements ApplicationContextAware, BeanFactoryAware, B
     public void setBeanName(String beanName) {
         this.beanName = beanName;
         System.out.println("=======感知到了beanName：" + beanName);
+    }
+
+    public void companyPrint(String name){
+        company.printCompanyName(name);
     }
 }

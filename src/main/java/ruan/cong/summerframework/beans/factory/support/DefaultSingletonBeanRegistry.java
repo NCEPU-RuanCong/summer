@@ -10,6 +10,9 @@ import ruan.cong.summerframework.beans.factory.exception.BeanNotFoundException;
 import ruan.cong.summerframework.utils.StringUtils;
 
 public class DefaultSingletonBeanRegistry implements SingletonBeanRegistry {
+
+    protected static final Object NULL_OBJECT = new Object();
+
     private Map<String, Object> singletonObjects = new HashMap();
 
     private Map<String, DisposableBean> disposableBeans = new HashMap<>();

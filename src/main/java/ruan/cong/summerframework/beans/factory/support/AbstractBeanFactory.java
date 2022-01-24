@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import ruan.cong.summerframework.beans.BeanException;
 import ruan.cong.summerframework.beans.factory.BeanFactory;
+import ruan.cong.summerframework.beans.factory.FactoryBean;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
 import ruan.cong.summerframework.beans.factory.config.BeanPostProcessor;
-import ruan.cong.summerframework.beans.factory.exception.BeanDefinitionException;
 import ruan.cong.summerframework.utils.ClassUtils;
 
 /**
@@ -20,7 +20,7 @@ import ruan.cong.summerframework.utils.ClassUtils;
  * 但是为什么会有一个getBeanDefinition呢？？？
  *
  */
-public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
+public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements BeanFactory {
 
     private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
@@ -36,25 +36,42 @@ public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry i
 
     @Override
     public Object getBean(String beanName, Object... args){
-        Object obj = getSingletonBean(beanName);
-        if(obj != null){
-            return obj;
-        }
-        BeanDefinition beanDefinition = getBeanDefinition(beanName);
-        return createBean(beanDefinition, beanName, args);
+        return doGetBean(beanName, args);
     }
 
     @Override
     public Object getBean(String beanName){
-        Object obj = getSingletonBean(beanName);
-        if(obj != null){
-            return obj;
+        return doGetBean(beanName, null);
+    }
+
+    public <T> T getBean(String name, Class<T> requiredType) throws BeanException{
+        return (T)getBean(name);
+    }
+
+    protected <T> T doGetBean(final String name, final Object[] args){
+        // 1、获取单例Bean
+        Object shareInstance = getSingletonBean(name);
+        if(null != shareInstance){
+            return (T)getObjectForBeanInstance(shareInstance, name);
         }
-        BeanDefinition beanDefinition =getBeanDefinition(beanName);
-        if(beanDefinition == null){
-            throw new BeanDefinitionException(beanName + " related beanDefinition not found!");
+
+        BeanDefinition beanDefinition = getBeanDefinition(name);
+        Object bean = createBean(beanDefinition, name, args);
+        return (T)getObjectForBeanInstance(bean, name);
+    }
+
+    private Object getObjectForBeanInstance(Object beanInstance, String beanName){
+        if(!(beanInstance instanceof FactoryBean)){
+            return beanInstance;
         }
-        return createBean(beanName);
+
+        Object object = getCachedObjectFromFactoryBean(beanName);
+        if(null == object){
+            FactoryBean<?> factoryBean = (FactoryBean<?>)beanInstance;
+            object = getObjectFromFactoryBean(factoryBean, beanName);
+        }
+
+        return object;
     }
 
     protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeanException;

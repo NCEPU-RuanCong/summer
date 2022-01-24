@@ -31,7 +31,7 @@ public class BeanUtils {
                 try {
                     field.set(bean, value);
                 } catch (IllegalAccessException e) {
-                    throw new BeanException("create bean failed" + name);
+                    throw new BeanException("create bean failed " + name);
                 }
                 return;
             }

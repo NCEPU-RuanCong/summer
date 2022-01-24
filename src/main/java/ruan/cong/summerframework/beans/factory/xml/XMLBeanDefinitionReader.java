@@ -81,6 +81,7 @@ public class XMLBeanDefinitionReader extends AbstractBeanDefinitionReader {
             String className = bean.getAttribute("class");
             String initMethod = bean.getAttribute("init-method");
             String destroyMethod = bean.getAttribute("destroy-method");
+            String scope = bean.getAttribute("scope");
 
             Class<?> clazz = Class.forName(className);
             // id优先级 > name
@@ -98,8 +99,9 @@ public class XMLBeanDefinitionReader extends AbstractBeanDefinitionReader {
                 String attrValue = property.getAttribute("value");
                 String attrRef = property.getAttribute("ref");
 
-                initMethod = StringUtils.isEmpty(initMethod) ? property.getAttribute("init-method") : initMethod;
-                destroyMethod = StringUtils.isEmpty(destroyMethod) ? property.getAttribute("destroy-method") : destroyMethod;
+//                initMethod = StringUtils.isEmpty(initMethod) ? property.getAttribute("init-method") : initMethod;
+//                destroyMethod = StringUtils.isEmpty(destroyMethod) ? property.getAttribute("destroy-method") : destroyMethod;
+//                scope = StringUtils.isEmpty(scope) ? property.getAttribute("scope") : scope;
 
                 Object value = StringUtils.nonEmpty(attrRef) ? new BeanReference(attrRef) : attrValue;
                 PropertyValue propertyValue = new PropertyValue(attrName, value);
@@ -109,6 +111,8 @@ public class XMLBeanDefinitionReader extends AbstractBeanDefinitionReader {
             if(StringUtils.nonEmpty(initMethod)) beanDefinition.setInitMethodName(initMethod);
 
             if(StringUtils.nonEmpty(destroyMethod)) beanDefinition.setDestroyMethodName(destroyMethod);
+
+            beanDefinition.setScope(scope);
 
             if(getRegistry().containsBeanDefinition(beanName)){
                 throw new BeanException(beanName + " already exist!");

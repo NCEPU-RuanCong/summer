@@ -1,5 +1,7 @@
 package ruan.cong.summerframework.beans.context.support;
 
+import ruan.cong.summerframework.beans.BeanException;
+
 public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContext{
 
     private String[] configLocations;

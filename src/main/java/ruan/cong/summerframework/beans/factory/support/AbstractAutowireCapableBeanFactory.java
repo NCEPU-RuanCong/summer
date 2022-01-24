@@ -33,7 +33,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     @Override
     protected BeanDefinition getBeanDefinition(String beanName) throws BeanException {
-        return null;
+        return getBeanDefinition(beanName);
     }
 
     protected Object createBeanInstance(BeanDefinition beanDefinition, String beanName, Object[] args){
@@ -41,7 +41,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
         Constructor ctor = null;
         for(Constructor constructor : clazz.getDeclaredConstructors()){
             // 这里没有判断参数的类型，是一个bug，应该长度和参数的类型都对应上
-            if(null != constructor && constructor.getParameterTypes().length == args.length){
+            if(null != args && constructor.getParameterTypes().length == args.length){
                 ctor = constructor;
                 break;
             }
@@ -67,7 +67,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
         registerDisposalBeanIfNecessary(beanName, obj, beanDefinition);
 
-        addSingletonBean(beanName, obj);
+        if(beanDefinition.isSingleton()) {
+            addSingletonBean(beanName, obj);
+        }
         return obj;
     }
 
@@ -78,7 +80,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
         registerDisposalBeanIfNecessary(beanName, obj, beanDefinition);
 
-        addSingletonBean(beanName, obj);
+        if(beanDefinition.isSingleton()) {
+            addSingletonBean(beanName, obj);
+        }
         return obj;
     }
 
@@ -177,6 +181,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
     }
 
     protected void registerDisposalBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition){
+        if(beanDefinition.isPrototype()) return;
+
         if(bean instanceof DisposableBean || StringUtils.nonEmpty(beanDefinition.getDestroyMethodName())){
             registerDisposalBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
         }

@@ -1,6 +1,7 @@
 package ruan.cong.summerframework.beans.factory.config;
 
 import ruan.cong.summerframework.beans.PropertyValues;
+import ruan.cong.summerframework.utils.StringUtils;
 
 public class BeanDefinition {
     private Class beanClass;
@@ -10,6 +11,30 @@ public class BeanDefinition {
     private String initMethodName;
 
     private String destroyMethodName;
+
+    String SCOPE_SINGLETON = ConfigurableBeanFactory.SCOPE_SINGLETON;
+    String SCOPE_PROTOTYPE = ConfigurableBeanFactory.SCOPE_PROTOTYPE;
+
+    private boolean singleton;
+    private boolean prototype;
+
+    public boolean isSingleton() {
+        return singleton;
+    }
+
+    public boolean isPrototype() {
+        return prototype;
+    }
+
+    public void setScope(String scope){
+        if(StringUtils.isEmpty(scope)){
+            singleton = true;
+            prototype = false;
+            return;
+        }
+        singleton = SCOPE_SINGLETON.equals(scope);
+        prototype = SCOPE_PROTOTYPE.equals(scope);
+    }
 
     public String getDestroyMethodName() {
         return destroyMethodName;

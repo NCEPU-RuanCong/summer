@@ -9,11 +9,14 @@
         <property name="name" value="ruancong"/>
         <property name="number" value="TYC-666"/>
         <property name="user" ref="user"/>
+        <property name="company" ref="companyProxy"/>
         <property name="init-method" value="myInitMethod"/>
         <property name="destroy-method" value="myDestroyMethod"/>
     </bean>
     <bean id="myBeanFactoryPostProcessor" class="ruan.cong.summerframework.test.post.processor.MyBeanFactoryPostProcessor">
     </bean>
     <bean id="myPostProcessor" class="ruan.cong.summerframework.test.post.processor.MyPostProcessor">
+    </bean>
+    <bean id="companyProxy" class="ruan.cong.summerframework.test.factory.bean.UserFactoryBean">
     </bean>
 </beans>
