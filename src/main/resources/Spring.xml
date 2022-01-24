@@ -19,4 +19,6 @@
     </bean>
     <bean id="companyProxy" class="ruan.cong.summerframework.test.factory.bean.UserFactoryBean">
     </bean>
+    <bean id="customerEventListener" class="ruan.cong.summerframework.test.event.CustomerEventListener">
+    </bean>
 </beans>

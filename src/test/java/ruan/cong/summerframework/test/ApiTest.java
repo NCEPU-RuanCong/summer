@@ -1,7 +1,11 @@
 package ruan.cong.summerframework.test;
 
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.EventObject;
 import ruan.cong.summerframework.beans.PropertyValue;
 import ruan.cong.summerframework.beans.PropertyValues;
+import ruan.cong.summerframework.beans.context.event.ApplicationContextEvent;
 import ruan.cong.summerframework.beans.context.support.ClassPathXmlApplicationContext;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
 import ruan.cong.summerframework.beans.factory.config.BeanReference;
@@ -9,15 +13,33 @@ import ruan.cong.summerframework.beans.factory.support.DefaultListableBeanFactor
 import ruan.cong.summerframework.beans.factory.xml.XMLBeanDefinitionReader;
 import ruan.cong.summerframework.test.bean.UserService;
 import ruan.cong.summerframework.test.domain.User;
+import ruan.cong.summerframework.test.event.CustomerEvent;
 
 public class ApiTest {
     public static void main(String[] args) throws ClassNotFoundException {
-        factoryBeanTest();
+        eventTest();
+//        factoryBeanTest();
 //        awareTest();
 //        initAndDestroyMethodTest();
 //        ApplicationTest();
 //        XMLConfigurationTest();
 //        applyPropertyInject();
+    }
+
+    private static void eventTest(){
+        ClassPathXmlApplicationContext classPathXmlApplicationContext = new ClassPathXmlApplicationContext("classpath:Spring.xml");
+        classPathXmlApplicationContext.refresh();
+        CustomerEvent customerEvent = new CustomerEvent(classPathXmlApplicationContext, "the end of world", LocalDate.now(), "GOD");
+        classPathXmlApplicationContext.publishEvent(customerEvent);
+
+        UserService userServiceBean = (UserService)classPathXmlApplicationContext.getBean("userService");
+        userServiceBean.printUsername();
+        System.out.println("==============" + userServiceBean + "====================");
+        UserService userServiceBean2 = (UserService)classPathXmlApplicationContext.getBean("userService");
+        System.out.println("==============" + userServiceBean2 + "====================");
+        userServiceBean.companyPrint("jindi");
+        CustomerEvent customerEvent_2 = new CustomerEvent(classPathXmlApplicationContext, "f****", LocalDate.now(), "AHAHAH");
+        classPathXmlApplicationContext.publishEvent(customerEvent_2);
     }
 
     private static void factoryBeanTest(){
