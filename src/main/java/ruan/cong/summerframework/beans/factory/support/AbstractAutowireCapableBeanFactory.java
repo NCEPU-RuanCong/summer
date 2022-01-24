@@ -6,8 +6,7 @@ import java.util.List;
 import ruan.cong.summerframework.beans.BeanException;
 import ruan.cong.summerframework.beans.PropertyValue;
 import ruan.cong.summerframework.beans.PropertyValues;
-import ruan.cong.summerframework.beans.factory.DisposableBean;
-import ruan.cong.summerframework.beans.factory.InitializingBean;
+import ruan.cong.summerframework.beans.factory.*;
 import ruan.cong.summerframework.beans.factory.config.AutowireCapableBeanFactory;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
 import ruan.cong.summerframework.beans.factory.config.BeanPostProcessor;
@@ -100,13 +99,26 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
     private Object initializeBean(String beanName, Object obj, BeanDefinition beanDefinition){
 
-        // 1、前置处理器
+        // 1、Aware感知接口
+        if(obj instanceof Aware){
+            if(obj instanceof BeanFactoryAware){
+                ((BeanFactoryAware)obj).setBeanFactory(this);
+            }
+            if(obj instanceof BeanNameAware){
+                ((BeanNameAware)obj).setBeanName(beanName);
+            }
+            if(obj instanceof BeanClassLoaderAware){
+                ((BeanClassLoaderAware)obj).setBeanClassLoader(this.getBeanClassLoader());
+            }
+        }
+
+        // 2、前置处理器
         Object wrapperBean = applyBeanPostProcessorBeforeInitialization(obj, beanName);
 
-        // 2、方法调用
+        // 3、方法调用
         invokeInitMethod(beanName, obj, beanDefinition);
 
-        // 3、后置处理器
+        // 4、后置处理器
         wrapperBean = applyBeanPostProcessorAfterInitialization(wrapperBean, beanName);
 
         return wrapperBean;

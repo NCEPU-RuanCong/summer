@@ -7,6 +7,7 @@ import ruan.cong.summerframework.beans.factory.BeanFactory;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
 import ruan.cong.summerframework.beans.factory.config.BeanPostProcessor;
 import ruan.cong.summerframework.beans.factory.exception.BeanDefinitionException;
+import ruan.cong.summerframework.utils.ClassUtils;
 
 /**
  *
@@ -21,10 +22,16 @@ import ruan.cong.summerframework.beans.factory.exception.BeanDefinitionException
  */
 public abstract class AbstractBeanFactory extends DefaultSingletonBeanRegistry implements BeanFactory {
 
+    private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
+
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
     public List<BeanPostProcessor> getBeanPostProcessors() {
         return beanPostProcessors;
+    }
+
+    public ClassLoader getBeanClassLoader() {
+        return beanClassLoader;
     }
 
     @Override

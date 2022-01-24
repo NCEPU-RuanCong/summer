@@ -24,19 +24,22 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader i
         // 2、获取BeanFactory
         ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 
+        // 3、注册ApplicationContextAwareProcessor
+        beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+
         System.out.println("============================3、调用BeanFactoryPostProcessor==========================");
-        // 3、调用BeanFactoryPostProcessor
+        // 4、调用BeanFactoryPostProcessor
         invokeBeanFactoryPostProcessors(beanFactory);
 
         System.out.println("============================4、注册BeanPostProcessor==========================");
-        // 4、注册BeanPostProcessor
+        // 5、注册BeanPostProcessor
         registerBeanPostProcessor(beanFactory);
 
         System.out.println("============================5、实例化所有剩下的单例Bean==========================");
-        // 5、实例化所有剩下的单例Bean
+        // 6、实例化所有剩下的单例Bean
         beanFactory.preInstantiateSingletons();
 
-        // 6、注册钩子函数
+        // 7、注册钩子函数
         this.registerShutdownHook();
     }
 
