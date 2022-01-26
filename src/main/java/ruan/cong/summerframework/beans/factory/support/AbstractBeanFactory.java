@@ -76,7 +76,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
     protected abstract BeanDefinition getBeanDefinition(String beanName) throws BeanException;
 
-    protected abstract Object createBean(String beanName) throws BeanException;
+//    protected abstract Object createBean(String beanName) throws BeanException;
 
     protected abstract Object createBean(BeanDefinition beanDefinition, String beanName, Object[] args) throws BeanException;
 

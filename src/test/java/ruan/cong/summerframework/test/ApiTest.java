@@ -6,10 +6,12 @@ import java.lang.reflect.Proxy;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.EventObject;
+import org.junit.Test;
 import ruan.cong.summerframework.aop.AdvisedSupport;
 import ruan.cong.summerframework.aop.MethodMatcher;
 import ruan.cong.summerframework.aop.TargetSource;
 import ruan.cong.summerframework.aop.aspectj.AspectJExpressionPointcut;
+import ruan.cong.summerframework.aop.framework.Cglib2AopProxy;
 import ruan.cong.summerframework.aop.framework.JdkDynamicAopProxy;
 import ruan.cong.summerframework.aop.framework.ReflectiveMethodInvocation;
 import ruan.cong.summerframework.beans.PropertyValue;
@@ -29,9 +31,22 @@ import ruan.cong.summerframework.test.domain.User;
 import ruan.cong.summerframework.test.event.CustomerEvent;
 import org.aopalliance.intercept.MethodInterceptor;
 
+/**
+ *
+ *
+ * 这章有个问题，这样操作createBean，那么前置处理器不就失效了吗？
+ *
+ * 这里有需要注意的第二个点就是AOP创建出来的代理Bean不是单例的？Spring的本身实现是如何的呢？
+ *
+ * 这里的第三个问题就是构造函数的问题，使用cg的方式创建Bean的时候，如果该Bean只有带参数的构造函数那么会报错，必须加一个无参构造函数，感觉有点呆
+ * 试试Spring本身是不是这样的？如果不是怎么解决的？
+ *
+ */
+
 public class ApiTest {
     public static void main(String[] args) throws Exception {
-        test_dynamic();
+        SpringAop();
+//        test_dynamic();
 //        AOPTest();
 //        AopLearning();
 //        eventTest();
@@ -41,6 +56,16 @@ public class ApiTest {
 //        ApplicationTest();
 //        XMLConfigurationTest();
 //        applyPropertyInject();
+    }
+
+    @Test
+    private static void SpringAop(){
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
+//        applicationContext.refresh();
+        IUserService userService = applicationContext.getBean("userServiceAOP", IUserService.class);
+        IUserService userService_1 = applicationContext.getBean("userServiceAOP", IUserService.class);
+        System.out.println("测试结果：" + userService.queryUserInfo());
+        System.out.println(userService + "\n" + userService_1);
     }
 
     private static void test_dynamic(){
@@ -54,7 +79,8 @@ public class ApiTest {
         advisedSupport.setMethodMatcher(new AspectJExpressionPointcut("execution(* ruan.cong.summerframework.test.aop.IUserService.*(..))"));
 
         // 代理对象
-        IUserService proxy = (IUserService) new JdkDynamicAopProxy(advisedSupport).getProxy();
+//        IUserService proxy = (IUserService) new JdkDynamicAopProxy(advisedSupport).getProxy();
+        IUserService proxy = (IUserService) new Cglib2AopProxy(advisedSupport).getProxy();
 
         System.out.println(proxy.queryUserInfo());
     }

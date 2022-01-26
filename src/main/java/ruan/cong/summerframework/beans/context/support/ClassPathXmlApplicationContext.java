@@ -15,6 +15,7 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 
     public ClassPathXmlApplicationContext(String[] configLocations) {
         this.configLocations = configLocations;
+        refresh();
     }
 
     @Override

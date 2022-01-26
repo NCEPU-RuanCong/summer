@@ -7,10 +7,7 @@ import ruan.cong.summerframework.beans.BeanException;
 import ruan.cong.summerframework.beans.PropertyValue;
 import ruan.cong.summerframework.beans.PropertyValues;
 import ruan.cong.summerframework.beans.factory.*;
-import ruan.cong.summerframework.beans.factory.config.AutowireCapableBeanFactory;
-import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
-import ruan.cong.summerframework.beans.factory.config.BeanPostProcessor;
-import ruan.cong.summerframework.beans.factory.config.BeanReference;
+import ruan.cong.summerframework.beans.factory.config.*;
 import ruan.cong.summerframework.utils.BeanUtils;
 import ruan.cong.summerframework.utils.StringUtils;
 
@@ -46,44 +43,55 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
                 break;
             }
         }
-        Object obj = getInstantiationStrategy().instantiate(beanDefinition, beanName, ctor, args);
-        applyPropertyValues(beanName, beanDefinition, obj);
-        obj = initializeBean(beanName, obj, beanDefinition);
-        return obj;
+        return getInstantiationStrategy().instantiate(beanDefinition, beanName, ctor, args);
     }
 
-    @Override
-    protected Object createBean(String beanName) throws BeanException {
-        Object obj = null;
-        BeanDefinition beanDefinition = null;
-        try {
-            beanDefinition = getBeanDefinition(beanName);
-            obj = beanDefinition.getBeanClass().newInstance();
-            applyPropertyValues(beanName, beanDefinition, obj);
-            obj = initializeBean(beanName, obj, beanDefinition);
-        } catch (InstantiationException | IllegalAccessException e){
-            throw new BeanException("bean " + beanName + " create failed!", e);
-        }
-
-        registerDisposalBeanIfNecessary(beanName, obj, beanDefinition);
-
-        if(beanDefinition.isSingleton()) {
-            addSingletonBean(beanName, obj);
-        }
-        return obj;
-    }
+//    @Override
+//    protected Object createBean(String beanName) throws BeanException {
+//        Object obj = null;
+//        BeanDefinition beanDefinition = null;
+//        try {
+//            beanDefinition = getBeanDefinition(beanName);
+//            obj = beanDefinition.getBeanClass().newInstance();
+//            applyPropertyValues(beanName, beanDefinition, obj);
+//            obj = initializeBean(beanName, obj, beanDefinition);
+//        } catch (InstantiationException | IllegalAccessException e){
+//            throw new BeanException("bean " + beanName + " create failed!", e);
+//        }
+//
+//        registerDisposalBeanIfNecessary(beanName, obj, beanDefinition);
+//
+//        if(beanDefinition.isSingleton()) {
+//            addSingletonBean(beanName, obj);
+//        }
+//        return obj;
+//    }
 
     @Override
     protected Object createBean(BeanDefinition beanDefinition, String beanName, Object[] args) throws BeanException{
-        Object obj = null;
-        obj = createBeanInstance(beanDefinition, beanName, args);
+        Object bean = null;
+        try {
+            bean = resolveBeforeInstantiation(beanName, beanDefinition);
+            if (null != bean) {
+                return bean;
+            }
 
-        registerDisposalBeanIfNecessary(beanName, obj, beanDefinition);
+            bean = createBeanInstance(beanDefinition, beanName, args);
+
+            applyPropertyValues(beanName, beanDefinition, bean);
+
+            bean = initializeBean(beanName, bean, beanDefinition);
+
+        } catch (Exception e) {
+            throw new BeanException("Instantiation of bean failed", e);
+        }
+
+        registerDisposalBeanIfNecessary(beanName, bean, beanDefinition);
 
         if(beanDefinition.isSingleton()) {
-            addSingletonBean(beanName, obj);
+            addSingletonBean(beanName, bean);
         }
-        return obj;
+        return bean;
     }
 
     protected void applyPropertyValues(String beanName, BeanDefinition beanDefinition, Object bean){
@@ -145,6 +153,22 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             }
         }
     }
+
+    protected Object resolveBeforeInstantiation(String beanName, BeanDefinition beanDefinition) {
+        Object bean = applyBeanPostProcessorsBeforeInstantiation(beanDefinition.getBeanClass(), beanName);
+        return null != bean ? applyBeanPostProcessorAfterInitialization(bean, beanName) : null;
+    }
+
+    protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {
+                Object result = ((InstantiationAwareBeanPostProcessor)beanPostProcessor).postProcessBeforeInstantiation(beanClass, beanName);
+                if (null != result) return result;
+            }
+        }
+        return null;
+    }
+
 
     /**
      *
