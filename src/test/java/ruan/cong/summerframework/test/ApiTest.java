@@ -1,8 +1,17 @@
 package ruan.cong.summerframework.test;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.EventObject;
+import ruan.cong.summerframework.aop.AdvisedSupport;
+import ruan.cong.summerframework.aop.MethodMatcher;
+import ruan.cong.summerframework.aop.TargetSource;
+import ruan.cong.summerframework.aop.aspectj.AspectJExpressionPointcut;
+import ruan.cong.summerframework.aop.framework.JdkDynamicAopProxy;
+import ruan.cong.summerframework.aop.framework.ReflectiveMethodInvocation;
 import ruan.cong.summerframework.beans.PropertyValue;
 import ruan.cong.summerframework.beans.PropertyValues;
 import ruan.cong.summerframework.beans.context.event.ApplicationContextEvent;
@@ -11,19 +20,91 @@ import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
 import ruan.cong.summerframework.beans.factory.config.BeanReference;
 import ruan.cong.summerframework.beans.factory.support.DefaultListableBeanFactory;
 import ruan.cong.summerframework.beans.factory.xml.XMLBeanDefinitionReader;
+import ruan.cong.summerframework.test.aop.AopInterface;
+import ruan.cong.summerframework.test.aop.AopTestService;
+import ruan.cong.summerframework.test.aop.IUserService;
+import ruan.cong.summerframework.test.aop.UserServiceInterceptor;
 import ruan.cong.summerframework.test.bean.UserService;
 import ruan.cong.summerframework.test.domain.User;
 import ruan.cong.summerframework.test.event.CustomerEvent;
+import org.aopalliance.intercept.MethodInterceptor;
 
 public class ApiTest {
-    public static void main(String[] args) throws ClassNotFoundException {
-        eventTest();
+    public static void main(String[] args) throws Exception {
+        test_dynamic();
+//        AOPTest();
+//        AopLearning();
+//        eventTest();
 //        factoryBeanTest();
 //        awareTest();
 //        initAndDestroyMethodTest();
 //        ApplicationTest();
 //        XMLConfigurationTest();
 //        applyPropertyInject();
+    }
+
+    private static void test_dynamic(){
+        IUserService iUserService = new ruan.cong.summerframework.test.aop.UserService();
+
+
+        // 代理
+        AdvisedSupport advisedSupport = new AdvisedSupport();
+        advisedSupport.setTargetSource(new TargetSource(iUserService));
+        advisedSupport.setMethodInterceptor(new UserServiceInterceptor());
+        advisedSupport.setMethodMatcher(new AspectJExpressionPointcut("execution(* ruan.cong.summerframework.test.aop.IUserService.*(..))"));
+
+        // 代理对象
+        IUserService proxy = (IUserService) new JdkDynamicAopProxy(advisedSupport).getProxy();
+
+        System.out.println(proxy.queryUserInfo());
+    }
+
+    private static void AOPTest() throws NoSuchMethodException {
+        AspectJExpressionPointcut aspectJExpressionPointcut = new AspectJExpressionPointcut("execution(* ruan.cong.summerframework.test.aop.AopTestService.*(..))");
+        Class<AopTestService> clazz = AopTestService.class;
+        Method[] declaredMethods = clazz.getDeclaredMethods();
+        System.out.println(declaredMethods[0].getName());
+        /**
+         *
+         * 原来getMethod(具体方法名字,方法参数...)这才是正确使用姿势
+         *
+         */
+        Method method = clazz.getDeclaredMethod("aopTest", String.class);
+        System.out.println(aspectJExpressionPointcut.matches(clazz));
+        System.out.println(aspectJExpressionPointcut.matches(method, clazz));
+
+        Class<UserService> clazz_1 = UserService.class;
+        Method method1 = clazz_1.getDeclaredMethod("companyPrint", String.class);
+        System.out.println(aspectJExpressionPointcut.matches(clazz_1));
+        System.out.println(aspectJExpressionPointcut.matches(method1, clazz_1));
+    }
+
+    private static void AopLearning(){
+        Object target = new AopTestService();
+        AopInterface proxy = (AopInterface) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                target.getClass().getInterfaces(), new InvocationHandler() {
+                    MethodMatcher methodMatcher = new AspectJExpressionPointcut("execution(* ruan.cong.summerframework.test.aop.AopTestService.*(..))");
+
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                        if(methodMatcher.matches(method, proxy.getClass())){
+                            MethodInterceptor methodInterceptor = invocation -> {
+                                System.out.println("代理开始。。。");
+                                try {
+                                    return invocation.proceed();
+                                } finally {
+                                    System.out.println("代理完毕!");
+                                }
+                            };
+                            System.out.println("方法执行开始...");
+                            Object result = methodInterceptor.invoke(new ReflectiveMethodInvocation(target, method, args));
+                            System.out.println("方法执行完毕!");
+                            return result;
+                        }
+                        return method.invoke(target, args);
+                    }
+                });
+        proxy.aopTest("aop-test");
     }
 
     private static void eventTest(){

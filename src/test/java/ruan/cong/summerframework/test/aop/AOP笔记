@@ -1,0 +1,37 @@
+在学习AOP的时候需要理清楚几个基本概念：
+1、joinPoint
+2、cutPoint
+3、advice
+4、advisor
+5、aspect
+
+如果把AOP形象的比喻成用刀切韭菜，如果是正常情况我们一根一根的切，用上了切面就是直接切一把韭菜，因为切这个动作是所有韭菜都要参与的。
+那么：
+    joinPoint 就是每根韭菜被刀切的那个点
+    cutPoint 所有切点汇聚成的那个切面（对应到代码里面就是那个切点表达式，代表哪些需要切，哪些不需要切，也可以说是所有切点的汇聚）
+    advice 切面逻辑（被切的地方需要嵌入的逻辑，在Spring中有@Before,@After,@Around,@AfterReturning,@AfterThrowing）
+    advisor 切面（表示在哪切）
+    aspect 标记在类上面，起标记作用，并没有实际上的作用
+
+
+@Aspect
+public class aopAspect{
+
+    @before("execution(* com.aaa.bbb.aop.AopTestService*(...))")
+    public void aopExecute(){
+        System.out.println("执行AOP");
+    }
+
+}
+
+那么上面几个分别是：
+    joinPoint void aopTest(String aop)； AopTestService中的方法
+    cutPoint * com.aaa.bbb.aop.AopTestService*(...)
+    advice public void aopExecute(){
+                   System.out.println("执行AOP");
+               }
+    advisor @before("execution(* com.aaa.bbb.aop.AopTestService*(...))")
+    Aspect aopAspect整个类
+
+下面是一篇不错的博客：
+    https://www.cnblogs.com/bjlhx/p/12081493.html
