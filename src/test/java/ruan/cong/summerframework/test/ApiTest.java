@@ -30,6 +30,7 @@ import ruan.cong.summerframework.test.bean.UserService;
 import ruan.cong.summerframework.test.domain.User;
 import ruan.cong.summerframework.test.event.CustomerEvent;
 import org.aopalliance.intercept.MethodInterceptor;
+import ruan.cong.summerframework.test.service.TestService;
 
 /**
  *
@@ -56,6 +57,13 @@ public class ApiTest {
 //        ApplicationTest();
 //        XMLConfigurationTest();
 //        applyPropertyInject();
+    }
+
+    @Test
+    public void testAnnotationValue(){
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-scan.xml");
+        TestService userService = applicationContext.getBean("userService", TestService.class);
+        System.out.println(userService.toString());
     }
 
     @Test

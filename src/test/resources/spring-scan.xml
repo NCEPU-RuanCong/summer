@@ -6,6 +6,10 @@
 	         http://www.springframework.org/schema/beans/spring-beans.xsd
 		 http://www.springframework.org/schema/context">
 
-    <context:component-scan base-package="ruan.cong.summerframework.test.aop"/>
+    <context:component-scan base-package="ruan.cong.summerframework.test.service"/>
+
+    <bean id="propertyPlaceholderConfigurer" class="ruan.cong.summerframework.beans.factory.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:token.properties"/>
+    </bean>
 
 </beans>

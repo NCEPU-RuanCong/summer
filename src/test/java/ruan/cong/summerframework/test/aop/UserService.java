@@ -3,7 +3,7 @@ package ruan.cong.summerframework.test.aop;
 import java.util.Random;
 import ruan.cong.summerframework.beans.context.annotation.Component;
 
-@Component("userService")
+//@Component("userService")
 public class UserService implements IUserService {
 
     private String token;

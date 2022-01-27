@@ -1,6 +1,8 @@
 package ruan.cong.summerframework.beans.factory.support;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import ruan.cong.summerframework.beans.BeanException;
 import ruan.cong.summerframework.beans.factory.ConfigurableListableBeanFactory;
@@ -54,6 +56,22 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
     @Override
     public void preInstantiateSingletons() throws BeanException {
+        beanDefinitionMap.keySet().forEach(this::getBean);
+    }
 
+    @Override
+    public <T> T getBean(Class<T> requiredType) throws BeanException {
+        List<String> beanNames = new ArrayList<>();
+        for (Map.Entry<String, BeanDefinition> entry : beanDefinitionMap.entrySet()) {
+            Class beanClass = entry.getValue().getBeanClass();
+            if (requiredType.isAssignableFrom(beanClass)) {
+                beanNames.add(entry.getKey());
+            }
+        }
+        if (1 == beanNames.size()) {
+            return getBean(beanNames.get(0), requiredType);
+        }
+
+        throw new BeanException(requiredType + "expected single bean but found " + beanNames.size() + ": " + beanNames);
     }
 }

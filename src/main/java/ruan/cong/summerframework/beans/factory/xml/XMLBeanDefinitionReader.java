@@ -114,8 +114,8 @@ public class XMLBeanDefinitionReader extends AbstractBeanDefinitionReader {
                 String attrValue = property.attributeValue("value");
                 String attrRef = property.attributeValue("ref");
 
-                Object value = StringUtils.nonEmpty(attrName) ? new BeanReference(attrRef) : attrValue;
-                PropertyValue propertyValue = new PropertyValue(attrName, attrValue);
+                Object value = StringUtils.nonEmpty(attrRef) ? new BeanReference(attrRef) : attrValue;
+                PropertyValue propertyValue = new PropertyValue(attrName, value);
 
                 beanDefinition.getPropertyValues().addPropertyValue(propertyValue);
             }

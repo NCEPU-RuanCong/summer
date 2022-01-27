@@ -1,6 +1,7 @@
 package ruan.cong.summerframework.beans.context.annotation;
 
 import java.util.Set;
+import ruan.cong.summerframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
 import ruan.cong.summerframework.beans.factory.support.BeanDefinitionRegistry;
 import ruan.cong.summerframework.utils.StringUtils;
@@ -23,6 +24,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
                 registry.registerBeanDefinition(determineBeanName(beanDefinition), beanDefinition);
             }
         }
+        registry.registerBeanDefinition("ruan.cong.summer.context.annotation.internalAutowiredAnnotationProcessor", new BeanDefinition(AutowiredAnnotationBeanPostProcessor.class));
     }
 
     private String resolveBeanScope(BeanDefinition beanDefinition) {
@@ -38,7 +40,8 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
         String value = component.value();
         if (StringUtils.nonEmpty(value)) {
             value = StringUtils.lowerFirst(value);
+            return value;
         }
-        return value;
+        return StringUtils.lowerFirst(beanClass.getSimpleName());
     }
 }

@@ -8,6 +8,7 @@ import ruan.cong.summerframework.beans.factory.FactoryBean;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
 import ruan.cong.summerframework.beans.factory.config.BeanPostProcessor;
 import ruan.cong.summerframework.utils.ClassUtils;
+import ruan.cong.summerframework.utils.StringValueResolver;
 
 /**
  *
@@ -25,6 +26,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
     private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
     private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
+
+    private List<StringValueResolver> embeddedValueResolver = new ArrayList<>();
 
     public List<BeanPostProcessor> getBeanPostProcessors() {
         return beanPostProcessors;
@@ -84,4 +87,17 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
         this.beanPostProcessors.remove(beanPostProcessor);
         this.beanPostProcessors.add(beanPostProcessor);
     }
+
+    public void addEmbeddedValueResolver(StringValueResolver stringValueResolver){
+        this.embeddedValueResolver.add(stringValueResolver);
+    }
+
+    public String resolveEmbeddedValue(String value){
+        String strValue = value;
+        for(StringValueResolver stringValueResolver : this.embeddedValueResolver) {
+            strValue = stringValueResolver.resolverStringValue(value);
+        }
+        return strValue;
+    }
+
 }

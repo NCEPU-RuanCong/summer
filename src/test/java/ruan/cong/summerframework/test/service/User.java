@@ -1,11 +1,17 @@
-package ruan.cong.summerframework.test.domain;
+package ruan.cong.summerframework.test.service;
 
 import ruan.cong.summerframework.beans.context.annotation.Component;
+import ruan.cong.summerframework.beans.factory.annotation.Value;
 
 @Component
 public class User {
+    @Value("${number}")
     private String number;
+
+    @Value("${name}")
     private String name;
+
+    @Value("${title}")
     private String title;
 
     public String getNumber() {

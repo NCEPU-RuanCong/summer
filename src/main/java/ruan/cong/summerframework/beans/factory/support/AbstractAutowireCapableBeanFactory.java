@@ -78,6 +78,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
             bean = createBeanInstance(beanDefinition, beanName, args);
 
+            applyBeanPostProcessorsBeforeApplyingPropertyValues(beanName, bean, beanDefinition);
+
             applyPropertyValues(beanName, beanDefinition, bean);
 
             bean = initializeBean(beanName, bean, beanDefinition);
@@ -92,6 +94,19 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
             addSingletonBean(beanName, bean);
         }
         return bean;
+    }
+
+    protected void applyBeanPostProcessorsBeforeApplyingPropertyValues(String beanName, Object bean, BeanDefinition beanDefinition) {
+        for (BeanPostProcessor beanPostProcessor : getBeanPostProcessors()) {
+            if (beanPostProcessor instanceof InstantiationAwareBeanPostProcessor) {
+                PropertyValues pvs = ((InstantiationAwareBeanPostProcessor)beanPostProcessor).postProcessPropertyValues(beanDefinition.getPropertyValues(), bean, beanName);
+                if (null != pvs) {
+                    for (PropertyValue propertyValue : pvs.getPropertyValues()) {
+                        beanDefinition.getPropertyValues().addPropertyValue(propertyValue);
+                    }
+                }
+            }
+        }
     }
 
     protected void applyPropertyValues(String beanName, BeanDefinition beanDefinition, Object bean){

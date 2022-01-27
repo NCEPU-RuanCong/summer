@@ -7,6 +7,7 @@ import ruan.cong.summerframework.aop.*;
 import ruan.cong.summerframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import ruan.cong.summerframework.aop.framework.ProxyFactory;
 import ruan.cong.summerframework.beans.BeanException;
+import ruan.cong.summerframework.beans.PropertyValues;
 import ruan.cong.summerframework.beans.factory.BeanFactory;
 import ruan.cong.summerframework.beans.factory.BeanFactoryAware;
 import ruan.cong.summerframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
@@ -59,6 +60,11 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
             return new ProxyFactory(advisedSupport).getProxy();
         }
 
+        return null;
+    }
+
+    @Override
+    public PropertyValues postProcessPropertyValues(PropertyValues pvs, Object bean, String beanName) throws BeanException {
         return null;
     }
 
