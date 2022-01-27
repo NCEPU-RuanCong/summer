@@ -10,8 +10,8 @@ public class PropertyValues {
         propertyValueList.add(propertyValue);
     }
 
-    public List<PropertyValue> getPropertyValues(){
-        return propertyValueList;
+    public PropertyValue[] getPropertyValues(){
+        return propertyValueList.toArray(new PropertyValue[0]);
     }
 
     public PropertyValue getPropertyValue(String name){

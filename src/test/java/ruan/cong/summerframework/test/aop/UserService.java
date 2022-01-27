@@ -1,8 +1,12 @@
 package ruan.cong.summerframework.test.aop;
 
 import java.util.Random;
+import ruan.cong.summerframework.beans.context.annotation.Component;
 
+@Component("userService")
 public class UserService implements IUserService {
+
+    private String token;
 
     public String queryUserInfo() {
         try {
@@ -23,4 +27,14 @@ public class UserService implements IUserService {
         return "注册用户：" + userName + " success！";
     }
 
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    @Override
+    public String toString() {
+        return "UserService{" +
+                "token='" + token + '\'' +
+                '}';
+    }
 }

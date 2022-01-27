@@ -59,6 +59,20 @@ public class ApiTest {
     }
 
     @Test
+    public void testScan(){
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-scan.xml");
+        IUserService userService = applicationContext.getBean("userService", IUserService.class);
+        // 这里并没有解决在配置文件中配置的注入信息，因为只扫描了class类路径
+        System.out.println("测试结果" + userService.queryUserInfo() + "\n" + userService);
+    }
+
+    @Test
+    public void testProperty(){
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-property.xml");
+        IUserService userService = applicationContext.getBean("userService", IUserService.class);
+        System.out.println("测试结果" + userService);
+    }
+
     private static void SpringAop(){
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring.xml");
 //        applicationContext.refresh();

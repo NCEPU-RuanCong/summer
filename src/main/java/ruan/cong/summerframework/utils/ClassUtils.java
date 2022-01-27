@@ -1,5 +1,8 @@
 package ruan.cong.summerframework.utils;
 
+import cn.hutool.core.lang.ClassScanner;
+import java.lang.annotation.Annotation;
+import java.util.Set;
 import ruan.cong.summerframework.beans.factory.exception.ClassLoaderException;
 
 public class ClassUtils {
@@ -28,5 +31,9 @@ public class ClassUtils {
      */
     public static boolean isCglibProxyClassName(String className) {
         return (className != null && className.contains("$$"));
+    }
+
+    public static Set<Class<?>> scanPackageByAnnotation(String packageName, Class<? extends Annotation> annotationClass) {
+        return ClassScanner.scanPackageByAnnotation(packageName, annotationClass);
     }
 }

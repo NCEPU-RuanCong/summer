@@ -19,6 +19,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
         beanDefinitionMap.put(beanName, beanDefinition);
     }
 
+    @Override
     public BeanDefinition getBeanDefinition(String beanName) {
         if (StringUtils.isEmpty(beanName)) {
             throw new BeanException("empty bean name!");
