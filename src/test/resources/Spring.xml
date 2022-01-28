@@ -24,6 +24,7 @@
 
     <!--AOP-->
     <bean id="userServiceAOP" class="ruan.cong.summerframework.test.aop.UserService">
+        <property name="token" value="ruancong-token"/>
     </bean>
     <bean id="autoProxyCreator" class="ruan.cong.summerframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator">
     </bean>
