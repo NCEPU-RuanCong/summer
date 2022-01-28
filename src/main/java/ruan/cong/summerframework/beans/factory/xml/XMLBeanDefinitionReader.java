@@ -17,6 +17,7 @@ import ruan.cong.summerframework.beans.PropertyValue;
 import ruan.cong.summerframework.beans.context.annotation.ClassPathBeanDefinitionScanner;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
 import ruan.cong.summerframework.beans.factory.config.BeanReference;
+import ruan.cong.summerframework.beans.factory.config.ConfigurableBeanFactory;
 import ruan.cong.summerframework.beans.factory.exception.ResourceException;
 import ruan.cong.summerframework.beans.factory.support.AbstractBeanDefinitionReader;
 import ruan.cong.summerframework.beans.factory.support.BeanDefinitionRegistry;
@@ -104,9 +105,8 @@ public class XMLBeanDefinitionReader extends AbstractBeanDefinitionReader {
             beanDefinition.setInitMethodName(initMethod);
             beanDefinition.setDestroyMethodName(destroyMethodName);
 
-            if (StringUtils.nonEmpty(beanScope)) {
-                beanDefinition.setScope(beanScope);
-            }
+            // 默认设置成单例Bean
+            beanDefinition.setScope(StringUtils.nonEmpty(beanScope) ? beanScope : ConfigurableBeanFactory.SCOPE_SINGLETON);
 
             List<Element> propertyList = bean.elements("property");
             for(Element property : propertyList) {

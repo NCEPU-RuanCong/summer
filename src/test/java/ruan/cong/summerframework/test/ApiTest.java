@@ -27,6 +27,8 @@ import ruan.cong.summerframework.test.aop.AopTestService;
 import ruan.cong.summerframework.test.aop.IUserService;
 import ruan.cong.summerframework.test.aop.UserServiceInterceptor;
 import ruan.cong.summerframework.test.bean.UserService;
+import ruan.cong.summerframework.test.cycle.Husband;
+import ruan.cong.summerframework.test.cycle.Wife;
 import ruan.cong.summerframework.test.domain.User;
 import ruan.cong.summerframework.test.event.CustomerEvent;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -57,6 +59,15 @@ public class ApiTest {
 //        ApplicationTest();
 //        XMLConfigurationTest();
 //        applyPropertyInject();
+    }
+
+    @Test
+    public void cycleTest(){
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:cycle.xml");
+        Husband husband = applicationContext.getBean("husband", Husband.class);
+        Wife wife = applicationContext.getBean("wife", Wife.class);
+        System.out.println("Ruan cong say " + husband.callWife());
+        System.out.println("Na na say " + wife.callHusband());
     }
 
     @Test

@@ -6,7 +6,7 @@ public interface BeanPostProcessor {
     /**
      *
      * 这个是操作Bean的，因此即传入了ConfigurableListableBeanFactory又传入了beanName
-     * @param beanFactory
+     * @param
      * @param beanName
      * @return
      */
@@ -15,3 +15,5 @@ public interface BeanPostProcessor {
     Object postProcessAfterInitialization(Object bean, String beanName);
 
 }
+
+

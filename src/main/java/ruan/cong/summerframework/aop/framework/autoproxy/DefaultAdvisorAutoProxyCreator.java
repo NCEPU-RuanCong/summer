@@ -1,6 +1,9 @@
 package ruan.cong.summerframework.aop.framework.autoproxy;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import ruan.cong.summerframework.aop.*;
@@ -25,6 +28,8 @@ import ruan.cong.summerframework.beans.factory.support.DefaultListableBeanFactor
 public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPostProcessor, BeanFactoryAware {
 
     private DefaultListableBeanFactory beanFactory;
+
+    private final Set<Object> earlyProxyReference = Collections.synchronizedSet(new HashSet<Object>());
 
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeanException {
@@ -52,6 +57,13 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) {
+        if (!earlyProxyReference.contains(beanName)) {
+            return wrapIfNecessary(bean, beanName);
+        }
+        return bean;
+    }
+
+    protected Object wrapIfNecessary(Object bean, String beanName) {
         Class beanClass = bean.getClass();
 
         if (isInfrastructureClass(beanClass)) return bean;
@@ -74,7 +86,16 @@ public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPos
 
             return new ProxyFactory(advisedSupport).getProxy();
         }
-
         return bean;
+    }
+
+    public Object getEarlyBeanReference(Object bean, String beanName) {
+        earlyProxyReference.add(beanName);
+        return wrapIfNecessary(bean, beanName);
+    }
+
+    @Override
+    public boolean postProcessAfterInstantiation(Object bean, String beanName) throws BeanException {
+        return true;
     }
 }

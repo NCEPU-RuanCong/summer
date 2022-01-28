@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean id="husband" class="ruan.cong.summerframework.test.cycle.Husband">
+        <property name="wife" ref="wife"/>
+    </bean>
+    <bean id="wife" class="ruan.cong.summerframework.test.cycle.Wife">
+        <property name="husband" ref="husband"/>
+    </bean>
+</beans>
