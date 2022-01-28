@@ -60,6 +60,13 @@ public class ApiTest {
     }
 
     @Test
+    public void testProxyInject(){
+        ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:Spring.xml");
+        IUserService userService = applicationContext.getBean("userServiceAOP", IUserService.class);
+        System.out.println(userService.toString());
+    }
+
+    @Test
     public void testAnnotationValue(){
         ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:spring-scan.xml");
         TestService userService = applicationContext.getBean("userService", TestService.class);
