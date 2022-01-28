@@ -24,7 +24,8 @@
 
     <!--AOP-->
     <bean id="userServiceAOP" class="ruan.cong.summerframework.test.aop.UserService">
-        <property name="token" value="ruancong-token"/>
+        <property name="token" value="${token}"/>
+        <property name="user" ref="user"/>
     </bean>
     <bean id="autoProxyCreator" class="ruan.cong.summerframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator">
     </bean>
@@ -36,5 +37,8 @@
     <bean id="pointcutAdvisor" class="ruan.cong.summerframework.aop.aspectj.AspectJExpressionPointcutAdvisor">
         <property name="expression" value="execution(* ruan.cong.summerframework.test.aop.IUserService.*(..))"/>
         <property name="advice" ref="methodInterceptor"/>
+    </bean>
+    <bean class="ruan.cong.summerframework.beans.factory.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:token.properties"/>
     </bean>
 </beans>

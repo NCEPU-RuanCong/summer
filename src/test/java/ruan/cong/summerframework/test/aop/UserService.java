@@ -2,11 +2,22 @@ package ruan.cong.summerframework.test.aop;
 
 import java.util.Random;
 import ruan.cong.summerframework.beans.context.annotation.Component;
+import ruan.cong.summerframework.beans.factory.annotation.Autowired;
+import ruan.cong.summerframework.beans.factory.annotation.Value;
+import ruan.cong.summerframework.test.domain.User;
 
 //@Component("userService")
 public class UserService implements IUserService {
 
+    @Value("${token}")
     private String token;
+
+//    @Autowired
+    private User user;
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public String queryUserInfo() {
         try {
@@ -35,6 +46,6 @@ public class UserService implements IUserService {
     public String toString() {
         return "UserService{" +
                 "token='" + token + '\'' +
-                '}';
+                "}【" + user.toString() + "]";
     }
 }
