@@ -41,10 +41,14 @@ public class User {
         this.title = title;
     }
 
+    public void sayHello(){
+        System.out.println("hello a");
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "number=" + number +
+                "number=aaa" + number +
                 ", name='" + name + '\'' +
                 ", title='" + title + '\'' +
                 '}';

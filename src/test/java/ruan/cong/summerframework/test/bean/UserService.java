@@ -3,14 +3,11 @@ package ruan.cong.summerframework.test.bean;
 import ruan.cong.summerframework.beans.BeanException;
 import ruan.cong.summerframework.beans.context.ApplicationContext;
 import ruan.cong.summerframework.beans.context.ApplicationContextAware;
-import ruan.cong.summerframework.beans.factory.BeanClassLoaderAware;
-import ruan.cong.summerframework.beans.factory.BeanFactory;
-import ruan.cong.summerframework.beans.factory.BeanFactoryAware;
-import ruan.cong.summerframework.beans.factory.BeanNameAware;
+import ruan.cong.summerframework.beans.factory.*;
 import ruan.cong.summerframework.test.domain.User;
 import ruan.cong.summerframework.test.mapper.Company;
 
-public class UserService implements ApplicationContextAware, BeanFactoryAware, BeanNameAware, BeanClassLoaderAware {
+public class UserService implements ApplicationContextAware, BeanFactoryAware, BeanNameAware, BeanClassLoaderAware, InitializingBean {
 
     private ApplicationContext applicationContext;
     private BeanFactory beanFactory;
@@ -121,5 +118,10 @@ public class UserService implements ApplicationContextAware, BeanFactoryAware, B
 
     public void companyPrint(String name){
         company.printCompanyName(name);
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+
     }
 }

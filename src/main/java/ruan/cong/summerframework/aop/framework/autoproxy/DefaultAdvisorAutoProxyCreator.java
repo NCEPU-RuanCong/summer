@@ -18,10 +18,7 @@ import ruan.cong.summerframework.beans.factory.support.DefaultListableBeanFactor
 
 /**
  *
- *
- * 注意看这个类通过实现BeanFactoryAware类，获取到了beanFactory，然后进行了一系列的Bean的操作，比如提前按照自己的想法
- * 实例化Bean，这里就是实现了AOP，返回的是代理Bean
- * 我最开始以为是在原来的Bean基础上加工，原来这里直接是在Bean的实例化之前就拦下来自己操作了
+ * Bean流程执行完毕才会AOP
  *
  *
  */

@@ -1,37 +1,28 @@
 package ruan.cong.summerframework.test;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.EventObject;
+import org.aopalliance.intercept.MethodInterceptor;
 import org.junit.Test;
 import ruan.cong.summerframework.aop.AdvisedSupport;
 import ruan.cong.summerframework.aop.MethodMatcher;
 import ruan.cong.summerframework.aop.TargetSource;
 import ruan.cong.summerframework.aop.aspectj.AspectJExpressionPointcut;
 import ruan.cong.summerframework.aop.framework.Cglib2AopProxy;
-import ruan.cong.summerframework.aop.framework.JdkDynamicAopProxy;
 import ruan.cong.summerframework.aop.framework.ReflectiveMethodInvocation;
 import ruan.cong.summerframework.beans.PropertyValue;
 import ruan.cong.summerframework.beans.PropertyValues;
-import ruan.cong.summerframework.beans.context.event.ApplicationContextEvent;
 import ruan.cong.summerframework.beans.context.support.ClassPathXmlApplicationContext;
 import ruan.cong.summerframework.beans.factory.config.BeanDefinition;
 import ruan.cong.summerframework.beans.factory.config.BeanReference;
 import ruan.cong.summerframework.beans.factory.support.DefaultListableBeanFactory;
 import ruan.cong.summerframework.beans.factory.xml.XMLBeanDefinitionReader;
-import ruan.cong.summerframework.test.aop.AopInterface;
-import ruan.cong.summerframework.test.aop.AopTestService;
-import ruan.cong.summerframework.test.aop.IUserService;
-import ruan.cong.summerframework.test.aop.UserServiceInterceptor;
+import ruan.cong.summerframework.test.aop.*;
 import ruan.cong.summerframework.test.bean.UserService;
 import ruan.cong.summerframework.test.cycle.Husband;
 import ruan.cong.summerframework.test.cycle.Wife;
 import ruan.cong.summerframework.test.domain.User;
 import ruan.cong.summerframework.test.event.CustomerEvent;
-import org.aopalliance.intercept.MethodInterceptor;
 import ruan.cong.summerframework.test.service.TestService;
 
 /**
@@ -59,6 +50,60 @@ public class ApiTest {
 //        ApplicationTest();
 //        XMLConfigurationTest();
 //        applyPropertyInject();
+//        AnnotationWeb
+//                ClassPathXmlApplicationContext
+    }
+
+    @Test
+    public void simpleAOP() {
+        // 目标对象
+        Object target = new SimpleAOPDemo();
+        // AOP 代理
+        SimpleAOPDemoInterface proxy = (SimpleAOPDemoInterface)Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                target.getClass().getInterfaces(), new InvocationHandler(){
+                    //AOP方法切面匹配器
+                    MethodMatcher methodMatcher = new AspectJExpressionPointcut("execution(* ruan.cong.summerframework.test.aop.SimpleAOPDemoInterface.sayHello_2(..))");
+
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                        if (methodMatcher.matches(method, target.getClass())) {
+                            System.out.println("方法" + method.getName() +"代理开始");
+                            MethodInterceptor methodInterceptor = invocation -> {
+                                long start = System.currentTimeMillis();
+                                try {
+                                    return invocation.proceed();
+                                } finally {
+                                    System.out.println("方法" + invocation.getMethod().getName() + "代理完毕，耗时:" + (System.currentTimeMillis() - start));
+                                }
+                            };
+                            // 被AOP代理后使用拦截器反射调用
+                            return methodInterceptor.invoke(new ReflectiveMethodInvocation(target, method, args));
+                        }
+                        // 没有被AOP代理的时候走的路径
+                        return method.invoke(target, args);
+                    }
+                });
+        // 通过代理调用方法
+        proxy.sayHello();
+        proxy.sayHello_2();
+    }
+
+    @Test
+    public void reflectTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        Constructor constructor = User.class.getDeclaredConstructor();
+        User user = (User)constructor.newInstance();
+        user.sayHello();
+//        Enhancer enhancer = new Enhancer();
+//        enhancer.setSuperclass(User.class);
+//        enhancer.setCallback(new MethodInterceptor() {
+//            @Override
+//            public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+//                method.invoke(o, objects);
+//                return null;
+//            }
+//        });
+//        User bean = (User)enhancer.create();
+//        bean.sayHello();
     }
 
     @Test
@@ -146,31 +191,31 @@ public class ApiTest {
     }
 
     private static void AopLearning(){
-        Object target = new AopTestService();
-        AopInterface proxy = (AopInterface) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-                target.getClass().getInterfaces(), new InvocationHandler() {
-                    MethodMatcher methodMatcher = new AspectJExpressionPointcut("execution(* ruan.cong.summerframework.test.aop.AopTestService.*(..))");
-
-                    @Override
-                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                        if(methodMatcher.matches(method, proxy.getClass())){
-                            MethodInterceptor methodInterceptor = invocation -> {
-                                System.out.println("代理开始。。。");
-                                try {
-                                    return invocation.proceed();
-                                } finally {
-                                    System.out.println("代理完毕!");
-                                }
-                            };
-                            System.out.println("方法执行开始...");
-                            Object result = methodInterceptor.invoke(new ReflectiveMethodInvocation(target, method, args));
-                            System.out.println("方法执行完毕!");
-                            return result;
-                        }
-                        return method.invoke(target, args);
-                    }
-                });
-        proxy.aopTest("aop-test");
+//        Object target = new AopTestService();
+//        AopInterface proxy = (AopInterface) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+//                target.getClass().getInterfaces(), new InvocationHandler() {
+//                    MethodMatcher methodMatcher = new AspectJExpressionPointcut("execution(* ruan.cong.summerframework.test.aop.AopTestService.*(..))");
+//
+//                    @Override
+//                    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+//                        if(methodMatcher.matches(method, proxy.getClass())){
+//                            MethodInterceptor methodInterceptor = invocation -> {
+//                                System.out.println("代理开始。。。");
+//                                try {
+//                                    return invocation.proceed();
+//                                } finally {
+//                                    System.out.println("代理完毕!");
+//                                }
+//                            };
+//                            System.out.println("方法执行开始...");
+//                            Object result = methodInterceptor.invoke(new ReflectiveMethodInvocation(target, method, args));
+//                            System.out.println("方法执行完毕!");
+//                            return result;
+//                        }
+//                        return method.invoke(target, args);
+//                    }
+//                });
+//        proxy.aopTest("aop-test");
     }
 
     private static void eventTest(){
